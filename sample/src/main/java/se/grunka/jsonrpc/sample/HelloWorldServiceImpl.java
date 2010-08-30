@@ -1,6 +1,6 @@
 package se.grunka.jsonrpc.sample;
 
-public class SomeServiceImpl implements SomeService {
+public class HelloWorldServiceImpl implements HelloWorldService {
     @Override
     public String sayHello(String to) {
         return "Hello " + to + "!";
