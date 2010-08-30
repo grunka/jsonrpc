@@ -23,6 +23,8 @@ public class ServiceServlet extends HttpServlet {
         //TODO way of instantiating with a service definition and implementation
         //TODO code cleanup
         //TODO error handling
+        //TODO selective level of json encoding, i.e strings should just be json strings not strings in strings
+        //TODO automated testing
         ServiceRequest serviceRequest = gson.fromJson(req.getReader(), ServiceRequest.class);
         String requestMethod = serviceRequest.method();
         Map<String, String> requestParameters = serviceRequest.arguments();
