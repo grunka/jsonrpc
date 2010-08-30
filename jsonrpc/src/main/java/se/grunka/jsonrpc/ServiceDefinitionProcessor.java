@@ -58,7 +58,7 @@ public class ServiceDefinitionProcessor extends AbstractProcessor {
     }
 
 
-    private void processMethod(StringBuilder builder, String methodName, ExecutableElement element) throws IOException {
+    private void processMethod(StringBuilder builder, String methodName, ExecutableElement element) {
         StringBuilder classes = new StringBuilder();
         StringBuilder names = new StringBuilder();
         boolean first = true;
