@@ -9,7 +9,7 @@ import javax.lang.model.element.*;
 import javax.tools.JavaFileObject;
 import java.io.IOException;
 import java.io.Writer;
-import java.util.*;
+import java.util.Set;
 
 @SupportedAnnotationTypes("se.grunka.jsonrpc.ServiceDefinition")
 @SupportedSourceVersion(SourceVersion.RELEASE_6)
@@ -28,7 +28,6 @@ public class ServiceDefinitionProcessor extends AbstractProcessor {
         }
         return true;
     }
-
 
     private void processInterface(TypeElement typeElement) throws IOException {
         String className = typeElement.getQualifiedName().toString();
@@ -56,7 +55,6 @@ public class ServiceDefinitionProcessor extends AbstractProcessor {
         writer.write(builder.toString());
         writer.close();
     }
-
 
     private void processMethod(StringBuilder builder, String methodName, ExecutableElement element) {
         StringBuilder classes = new StringBuilder();

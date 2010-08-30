@@ -6,7 +6,6 @@ public class SomeServiceImpl implements SomeService {
         return "Hello " + to + "!";
     }
 
-
     @Override
     public String sayHello(String to, String also) {
         return "Hello " + to + " and " + also + "!";

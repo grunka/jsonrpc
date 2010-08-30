@@ -18,7 +18,7 @@ import java.util.Map;
 public class ServiceProvider {
     @SuppressWarnings("unchecked")
     public <T> T createService(Class<? extends T> type, String endpointUrl) {
-        return (T) Proxy.newProxyInstance(this.getClass().getClassLoader(), new Class<?>[] { type }, createHandler(endpointUrl, type));
+        return (T) Proxy.newProxyInstance(this.getClass().getClassLoader(), new Class<?>[]{type}, createHandler(endpointUrl, type));
     }
 
     private <T> InvocationHandler createHandler(String endpointUrl, Class<? extends T> type) {
@@ -46,6 +46,5 @@ public class ServiceProvider {
             }
         };
     }
-
 
 }
