@@ -32,43 +32,52 @@ public class ServiceDefinitionProcessor extends AbstractProcessor {
 
     private void processInterface(TypeElement typeElement) throws IOException {
         String className = typeElement.getQualifiedName().toString();
-        JavaFileObject object = processingEnv.getFiler().createSourceFile(className + "ParameterNames");
-        Writer writer = object.openWriter();
-        writer.write("package " + className.substring(0, className.lastIndexOf(".")) + ";");
-        writer.write("public class " + typeElement.getSimpleName().toString() + "ParameterNames {");
+        StringBuilder builder = new StringBuilder();
+        builder.append("package ").append(className.substring(0, className.lastIndexOf("."))).append(";");
+        builder.append("import java.util.Map; import java.util.HashMap;");
+        builder.append("public class ").append(typeElement.getSimpleName().toString()).append("ParameterNames {");
 
-        writer.write("public static java.util.Map<String, java.util.Map<Class<?>[], String[]>> getMapping() {");
-        writer.write("java.util.Map<String, java.util.Map<Class<?>[], String[]>> methodMapping = new java.util.HashMap<String, java.util.Map<Class<?>[], String[]>>();");
-        writer.write("java.util.Map<Class<?>[], String[]> mapping;");
+        builder.append("public static Map<String, Map<Class<?>[], String[]>> getMapping() {");
+        builder.append("Map<String, Map<Class<?>[], String[]>> methodMapping = new HashMap<String, Map<Class<?>[], String[]>>();");
+        builder.append("Map<Class<?>[], String[]> mapping;");
 
         for (Element element : typeElement.getEnclosedElements()) {
             if (element.getKind() == ElementKind.METHOD && element instanceof ExecutableElement) {
                 String methodName = element.getSimpleName().toString();
-                writer.write("mapping = new java.util.HashMap<Class<?>[], String[]>();");
-                writer.write("methodMapping.put(\"" + methodName + "\", mapping);");
-                processMethod(writer, methodName, (ExecutableElement) element);
+                builder.append("mapping = new HashMap<Class<?>[], String[]>();");
+                builder.append("methodMapping.put(\"").append(methodName).append("\", mapping);");
+                processMethod(builder, methodName, (ExecutableElement) element);
             }
         }
 
-        writer.write("return methodMapping; }");
-        writer.write("}");
+        builder.append("return methodMapping; } }");
+        JavaFileObject object = processingEnv.getFiler().createSourceFile(className + "ParameterNames");
+        Writer writer = object.openWriter();
+        writer.write(builder.toString());
         writer.close();
     }
 
 
-    private void processMethod(Writer writer, String methodName, ExecutableElement element) throws IOException {
-        String classes = "";
-        String names = "";
+    private void processMethod(StringBuilder builder, String methodName, ExecutableElement element) throws IOException {
+        StringBuilder classes = new StringBuilder();
+        StringBuilder names = new StringBuilder();
+        boolean first = true;
         for (VariableElement variableElement : element.getParameters()) {
+            if (!first) {
+                classes.append(",");
+                names.append(",");
+            } else {
+                first = false;
+            }
             String type = variableElement.asType().toString();
+            classes.append(type).append(".class");
             String name = variableElement.getSimpleName().toString();
-            classes += type + ".class,";
-            names += "\"" + name + "\",";
+            names.append("\"").append(name).append("\"");
         }
-        writer.write("mapping.put(new Class<?>[]{");
-        writer.write(classes.length() > 0 ? classes.substring(0, classes.length() - 1) : "");
-        writer.write("},new String[]{");
-        writer.write(names.length() > 0 ? names.substring(0, names.length() - 1) : "");
-        writer.write("});");
+        builder.append("mapping.put(new Class<?>[]{");
+        builder.append(classes.toString());
+        builder.append("},new String[]{");
+        builder.append(names.toString());
+        builder.append("});");
     }
 }
