@@ -7,6 +7,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.*;
@@ -19,21 +20,28 @@ public class ServiceServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        //TODO way of instantiating with a service definition and implementation
+        //TODO code cleanup
+        //TODO error handling
         ServiceRequest serviceRequest = gson.fromJson(req.getReader(), ServiceRequest.class);
-        String methodName = serviceRequest.method();
-        Set<String> receivedParameters = serviceRequest.arguments().keySet();
-        for (Map.Entry<Set<String>, Class<?>[]> entry : parameterOrdering.get(methodName).entrySet()) {
+        String requestMethod = serviceRequest.method();
+        Map<String, String> requestParameters = serviceRequest.arguments();
+        Set<String> requestParameterNames = requestParameters.keySet();
+        for (Map.Entry<Set<String>, Class<?>[]> entry : parameterOrdering.get(requestMethod).entrySet()) {
             Set<String> parameterNames = entry.getKey();
-            if (parameterNames.size() == receivedParameters.size() && parameterNames.containsAll(receivedParameters)) {
+            if (parameterNames.size() == requestParameterNames.size() && parameterNames.containsAll(requestParameterNames)) {
                 try {
-                    Method serviceMethod = service.getClass().getDeclaredMethod(methodName, entry.getValue());
+                    Method serviceMethod = service.getClass().getDeclaredMethod(requestMethod, entry.getValue());
                     int i = 0;
                     Object[] arguments = new Object[parameterNames.size()];
-                    for (String argumentValue : serviceRequest.arguments().values()) {
+                    for (String argumentValue : requestParameters.values()) {
                         arguments[i] = gson.fromJson(argumentValue, entry.getValue()[i]);
                         i++;
                     }
-                    serviceMethod.invoke(service, arguments);
+                    Object result = serviceMethod.invoke(service, arguments);
+                    PrintWriter writer = resp.getWriter();
+                    writer.println(gson.toJson(result));
+                    writer.close();
                 } catch (NoSuchMethodException e) {
                     throw new Error("Error handling not implemented", e);
                 } catch (IllegalAccessException e) {
@@ -47,7 +55,6 @@ public class ServiceServlet extends HttpServlet {
     }
 
     private Map<String, Map<Set<String>, Class<?>[]>> createParameterOrdering() {
-        //TODO put in service class
         Map<String, Map<Class<?>[], String[]>> parameterMapping = ServiceLookup.getParameterNamesMapping(null);
         Map<String, Map<Set<String>, Class<?>[]>> parameterOrdering = new HashMap<String, Map<Set<String>, Class<?>[]>>();
         for (Map.Entry<String, Map<Class<?>[], String[]>> methodEntry : parameterMapping.entrySet()) {
