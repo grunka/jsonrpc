@@ -1,8 +1,8 @@
 package se.grunka.jsonrpc.sample;
 
-import se.grunka.jsonrpc.ServiceDefinition;
+import se.grunka.jsonrpc.Service;
 
-@ServiceDefinition
+@Service
 public interface SomeService {
     String sayHello(String to);
 

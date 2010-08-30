@@ -4,7 +4,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Map;
 
-public class ServiceDefinitionLookup {
+public class ServiceLookup {
     @SuppressWarnings("unchecked")
     public static Map<String, Map<Class<?>[], String[]>> getParameterNamesMapping(Class<?> type) {
         String className = type.getCanonicalName() + "ParameterNames";

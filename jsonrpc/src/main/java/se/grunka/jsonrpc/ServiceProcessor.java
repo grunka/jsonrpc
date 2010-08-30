@@ -11,10 +11,10 @@ import java.io.IOException;
 import java.io.Writer;
 import java.util.Set;
 
-@SupportedAnnotationTypes("se.grunka.jsonrpc.ServiceDefinition")
+@SupportedAnnotationTypes("se.grunka.jsonrpc.Service")
 @SupportedSourceVersion(SourceVersion.RELEASE_6)
 @SuppressWarnings("unused")
-public class ServiceDefinitionProcessor extends AbstractProcessor {
+public class ServiceProcessor extends AbstractProcessor {
     @Override
     public boolean process(Set<? extends TypeElement> annotations, RoundEnvironment roundEnv) {
         try {

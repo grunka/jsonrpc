@@ -25,7 +25,7 @@ public class ServiceProvider {
         final HttpClient client = new DefaultHttpClient();
         final Gson gson = new Gson();
         final URI uri = URI.create(endpointUrl);
-        final Map<String, Map<Class<?>[], String[]>> parameterNamesMapping = ServiceDefinitionLookup.getParameterNamesMapping(type);
+        final Map<String, Map<Class<?>[], String[]>> parameterNamesMapping = ServiceLookup.getParameterNamesMapping(type);
 
         return new InvocationHandler() {
             public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
