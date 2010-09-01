@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -39,5 +40,16 @@ public class ExperimentsTest {
     @Test
     public void shouldOutputAString() throws Exception {
         assertEquals("\"value\"", gson.toJson("value"));
+    }
+
+    @Test
+    public void shouldEncodeDecode() throws Exception {
+        Map<String, String> arguments = new HashMap<String, String>();
+        arguments.put("string", "hello world");
+        arguments.put("number", String.valueOf(42));
+        arguments.put("complex", gson.toJson(BigDecimal.valueOf(123)));
+        ServiceRequest serviceRequest = new ServiceRequest("method_name", arguments);
+        String json = gson.toJson(serviceRequest);
+        System.out.println("json = " + json);
     }
 }

@@ -12,11 +12,15 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.*;
 
-public class ServiceServlet extends HttpServlet {
+public class ServiceServlet<T> extends HttpServlet {
     private final Gson gson = new Gson();
-    private final Map<String, Map<Set<String>, Class<?>[]>> parameterOrdering = createParameterOrdering();
+    private final Map<String, Map<Set<String>, Class<?>[]>> parameterOrdering;
+    private final Object service;
 
-    private final Object service = null;
+    public ServiceServlet(Class<? extends T> serviceInterface, T service) {
+        this.service = service;
+        parameterOrdering = createParameterOrdering(serviceInterface);
+    }
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -56,8 +60,8 @@ public class ServiceServlet extends HttpServlet {
         }
     }
 
-    private Map<String, Map<Set<String>, Class<?>[]>> createParameterOrdering() {
-        Map<String, Map<Class<?>[], String[]>> parameterMapping = ServiceLookup.getParameterNamesMapping(null);
+    private Map<String, Map<Set<String>, Class<?>[]>> createParameterOrdering(Class<? extends T> serviceInterface) {
+        Map<String, Map<Class<?>[], String[]>> parameterMapping = ServiceLookup.getParameterNamesMapping(serviceInterface);
         Map<String, Map<Set<String>, Class<?>[]>> parameterOrdering = new HashMap<String, Map<Set<String>, Class<?>[]>>();
         for (Map.Entry<String, Map<Class<?>[], String[]>> methodEntry : parameterMapping.entrySet()) {
             Map<Set<String>, Class<?>[]> methodParameters = new HashMap<Set<String>, Class<?>[]>();
