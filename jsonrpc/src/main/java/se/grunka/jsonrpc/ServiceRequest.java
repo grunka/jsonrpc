@@ -4,15 +4,9 @@ import java.util.Map;
 
 public class ServiceRequest {
     private final String method;
-    private final Map<String, String> arguments;
+    private final Map<String, Object> arguments;
 
-    @SuppressWarnings("unused")
-    public ServiceRequest() {
-        method = null;
-        arguments = null;
-    }
-
-    public ServiceRequest(String method, Map<String, String> arguments) {
+    public ServiceRequest(String method, Map<String, Object> arguments) {
         this.method = method;
         this.arguments = arguments;
     }
@@ -21,7 +15,7 @@ public class ServiceRequest {
         return method;
     }
 
-    public Map<String, String> arguments() {
+    public Map<String, Object> arguments() {
         return arguments;
     }
 }

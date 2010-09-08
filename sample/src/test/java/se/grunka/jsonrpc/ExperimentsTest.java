@@ -20,7 +20,7 @@ public class ExperimentsTest {
 
     @Test
     public void shouldDecodeRequestWithInternalJsonData() throws Exception {
-        Map<String, String> arguments = new HashMap<String, String>();
+        Map<String, Object> arguments = new HashMap<String, Object>();
         arguments.put("string", gson.toJson("a normal string"));
         arguments.put("number", gson.toJson(42));
         Map<String, String> object = new HashMap<String, String>();
@@ -44,7 +44,7 @@ public class ExperimentsTest {
 
     @Test
     public void shouldEncodeDecode() throws Exception {
-        Map<String, String> arguments = new HashMap<String, String>();
+        Map<String, Object> arguments = new HashMap<String, Object>();
         arguments.put("string", "hello world");
         arguments.put("number", String.valueOf(42));
         arguments.put("complex", gson.toJson(BigDecimal.valueOf(123)));

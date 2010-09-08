@@ -32,7 +32,7 @@ public class ServiceProvider {
                 HttpPost httpPost = new HttpPost(uri);
                 String methodName = method.getName();
                 String[] parameterNames = parameterNamesMapping.get(methodName).get(method.getParameterTypes());
-                Map<String, String> arguments = new HashMap<String, String>();
+                Map<String, Object> arguments = new HashMap<String, Object>();
                 for (int i = 0; i < args.length; i++) {
                     arguments.put(parameterNames[i], gson.toJson(args[i]));
                 }

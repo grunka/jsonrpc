@@ -31,7 +31,7 @@ public class ServiceServlet<T> extends HttpServlet {
         //TODO automated testing
         ServiceRequest serviceRequest = gson.fromJson(req.getReader(), ServiceRequest.class);
         String requestMethod = serviceRequest.method();
-        Map<String, String> requestParameters = serviceRequest.arguments();
+        Map<String, Object> requestParameters = serviceRequest.arguments();
         Set<String> requestParameterNames = requestParameters.keySet();
         for (Map.Entry<Set<String>, Class<?>[]> entry : parameterOrdering.get(requestMethod).entrySet()) {
             Set<String> parameterNames = entry.getKey();
@@ -40,8 +40,8 @@ public class ServiceServlet<T> extends HttpServlet {
                     Method serviceMethod = service.getClass().getDeclaredMethod(requestMethod, entry.getValue());
                     int i = 0;
                     Object[] arguments = new Object[parameterNames.size()];
-                    for (String argumentValue : requestParameters.values()) {
-                        arguments[i] = gson.fromJson(argumentValue, entry.getValue()[i]);
+                    for (Object argumentValue : requestParameters.values()) {
+                        arguments[i] = gson.fromJson(argumentValue.toString(), entry.getValue()[i]);
                         i++;
                     }
                     Object result = serviceMethod.invoke(service, arguments);
