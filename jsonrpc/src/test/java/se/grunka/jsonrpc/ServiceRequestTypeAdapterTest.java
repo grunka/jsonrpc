@@ -67,16 +67,19 @@ public class ServiceRequestTypeAdapterTest {
 
     @Test
     public void shouldDeserializeSimpleObjects() throws Exception {
+        when(typeLookup.lookup("method_name", "string")).thenReturn(String.class);
+        when(typeLookup.lookup("method_name", "integer")).thenReturn(Integer.class);
+        when(typeLookup.lookup("method_name", "decimal")).thenReturn(Float.class);
         String json = "{\"method\":\"method_name\",\"arguments\":{\"string\":\"text\",\"integer\":10,\"decimal\":1.3}}";
 
         ServiceRequest result = gson.fromJson(json, ServiceRequest.class);
 
         assertEquals(String.class, result.arguments().get("string").getClass());
-        assertEquals(int.class, result.arguments().get("integer").getClass());
-        assertEquals(float.class, result.arguments().get("decimal").getClass());
+        assertEquals(Integer.class, result.arguments().get("integer").getClass());
+        assertEquals(Float.class, result.arguments().get("decimal").getClass());
         assertEquals("text", result.arguments().get("string"));
         assertEquals(10, result.arguments().get("integer"));
-        assertEquals(1.3, result.arguments().get("decimal"));
+        assertEquals(1.3f, result.arguments().get("decimal"));
     }
 
 

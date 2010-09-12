@@ -15,7 +15,7 @@ public class ServiceRequestTypeAdapter implements JsonSerializer<ServiceRequest>
 
     @Override
     public ServiceRequest deserialize(JsonElement jsonElement, Type type, JsonDeserializationContext jsonDeserializationContext) throws JsonParseException {
-        JsonElement methodElement = ((JsonObject) jsonElement).get("methodName");
+        JsonElement methodElement = ((JsonObject) jsonElement).get("method");
         String methodName = methodElement.getAsString();
         JsonObject argumentsElement = (JsonObject) ((JsonObject) jsonElement).get("arguments");
         Map<String, Object> arguments = new HashMap<String, Object>();
@@ -23,8 +23,8 @@ public class ServiceRequestTypeAdapter implements JsonSerializer<ServiceRequest>
             for (Map.Entry<String, JsonElement> argumentEntry : argumentsElement.entrySet()) {
                 String argumentName = argumentEntry.getKey();
                 Type argumentType = typeLookup.lookup(methodName, argumentName);
-                jsonDeserializationContext.deserialize(argumentEntry.getValue(), argumentType);
-                arguments.put(argumentName, argumentEntry.getValue().getAsString());
+                Object value = jsonDeserializationContext.deserialize(argumentEntry.getValue(), argumentType);
+                arguments.put(argumentName, value);
             }
         }
         return new ServiceRequest(methodName, arguments);
