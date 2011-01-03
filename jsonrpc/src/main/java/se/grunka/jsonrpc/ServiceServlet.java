@@ -1,6 +1,7 @@
 package se.grunka.jsonrpc;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -13,7 +14,9 @@ import java.lang.reflect.Method;
 import java.util.*;
 
 public class ServiceServlet<T> extends HttpServlet {
-    private final Gson gson = new Gson();
+    private final Gson gson = new GsonBuilder()
+            .registerTypeAdapter(ServiceRequest.class, new ServiceRequestTypeAdapter(null))
+            .create();
     private final Map<String, Map<Set<String>, Class<?>[]>> parameterOrdering;
     private final Object service;
 
